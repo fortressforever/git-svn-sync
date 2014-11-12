@@ -21,10 +21,11 @@
 # stored.
 #  - GIT_SVN_SYNC_BRANCH: name of the branch that is synchronized with
 # subversion.
+#  - GIT_SVN_SYNC_EMAIL: email to send error reports to
 #
 # Usage: git-sync-with-svn.sh project_name
 
-destination=receiver@host.com
+destination=${GIT_SVN_SYNC_EMAIL}
 project=${1?No project provided}
 location=${GIT_SVN_SYNC_BASE}/${project}
 
@@ -55,6 +56,8 @@ git pull --ff-only origin master || { report "Could not pull changes from git re
 # Synchronize with SVN
 echo "Synchronizing with SVN"
 git checkout ${GIT_SVN_SYNC_BRANCH} || { report "Could not switch to sync branch" ; exit 1; }
+echo "Pulling any SVN changes"
+git svn rebase
 # In case of conflicts, take the master, as we are sure that this is
 # the correct branch
 git merge -Xtheirs master || { report "Could not merge changes into sync branch" ; exit 1; }
