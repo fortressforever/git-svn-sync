@@ -45,6 +45,6 @@ if [ -n "$(git status --porcelain)" ] ; then
 fi
 
 git fetch origin
-git cherry-pick -Xtheirs --allow-empty ${commits_to_pick} || { report "Could not cherry pick from git repository" ; exit 1; }
+git cherry-pick -Xtheirs ${commits_to_pick} || { report "Could not cherry pick from git repository" ; exit 1; }
 
 git svn dcommit || { report "Could not send changes to svn repository" ; exit 1; }
