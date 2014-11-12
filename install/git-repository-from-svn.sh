@@ -8,8 +8,6 @@
 #
 # Required environment variabless:
 #  - GIT_SCRIPTS: directory where the git sync scripts are located
-#  - GIT_BASE: directory where the git repositories are
-# stored.
 #  - GIT_SVN_SYNC_BASE: directory where the sync repositories are
 # stored.
 #  - GIT_SVN_SYNC_BRANCH: name of the branch that is synchronized with
@@ -26,11 +24,6 @@ project=${1?No project name provided}
 svn_url=${2?No svn url provided}
 git_url=${3?No git url provided}
 client=${GIT_SVN_SYNC_BASE}/${project}
-
-if [ -d $location ] ; then
-    echo "The folder for the git server already exists"
-    exit 1
-fi
 
 if [ -d $client ] ; then
     echo "The folder for the git sync client already exists"
