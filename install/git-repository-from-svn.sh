@@ -31,7 +31,7 @@ if [ -d $client ] ; then
 fi
 
 # Sync client
-git svn clone --parent ${svn_url} ${client} || { echo "Could not clone svn repository at ${svn_url} in ${client}" ; exit 1; }
+git svn clone ${svn_url} ${client} || { echo "Could not clone svn repository at ${svn_url} in ${client}" ; exit 1; }
 
 cd ${client}
 git remote add origin ${git_url} || { echo "Could not set up server as remote from sync" ; exit 1; }
