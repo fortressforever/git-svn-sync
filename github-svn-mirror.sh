@@ -57,7 +57,7 @@ if [ $revisions_to_merge -le 0 ] ; then
 	exit 1
 fi
 
-revision_to_merge=$git_working_copy_revision
+let revision_to_merge=$git_working_copy_revision+1
 while [ $revision_to_merge -le $git_head_revision ]; do
 	commit_msg=$(svn log $git_location --xml -r $revision_to_merge | sed -n -e '/<msg>/,/<\/msg>/{ s/<msg>\(.*\)/\1/; s/\(.*\)<\/msg>/\1/; p; }')
 	commit_hash=$(svn propget git-commit --revprop -r $revision_to_merge $git_location 2>&-)
