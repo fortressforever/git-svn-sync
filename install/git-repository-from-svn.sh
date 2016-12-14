@@ -6,12 +6,16 @@
 # Initializes a git repository that is synchronized with an existing
 # svn repository.
 #
-# Required environment variabless:
+# Required environment variables:
 #  - GIT_SCRIPTS: directory where the git sync scripts are located
 #  - GIT_SVN_SYNC_BASE: directory where the sync repositories are
 # stored.
-#  - GIT_SVN_SYNC_BRANCH: name of the branch that is synchronized with
-# subversion.
+#
+# Optional environment variables:
+# - GIT_SVN_SYNC_BRANCH: name of the branch that is synchronized with
+# subversion (default = svn).
+# - GIT_SVN_LAYOUT: SVN layout options to override (default --stdlayout)
+# - GIT_SVN_AUTHORS: authors-file option (default none)
 #
 # Usage: git-repository-from-svn.sh project svn_url git_url
 
@@ -20,9 +24,11 @@ if [ -z "${GIT_SCRIPTS}" ] || [ -z "${GIT_SVN_SYNC_BASE}" ] || [ -z "${GIT_SVN_S
     exit 1
 fi
 
+# Set optional variables
 : ${GIT_SVN_SYNC_BRANCH:="svn"}
 : ${GIT_SVN_LAYOUT:="--stdlayout"}
-: ${GIT_SVN_AUTHORS:="--authors-file=${GIT_SVN_SYNC_BASE}/authors.txt"}
+[ -z "${GIT_SVN_AUTHORS}" ] || GIT_SVN_AUTHORS="--authors-file=${GIT_SVN_AUTHORS}"}
+: ${GIT_HOOK_CMD:="ln -s"}
 
 project="${1?No project name provided}"
 svn_url="${2?No svn url provided}"
@@ -42,5 +48,5 @@ git remote add origin ${git_url} || { echo "Could not set up server as remote fr
 git branch ${GIT_SVN_SYNC_BRANCH} || { echo "Could not create svn sync branch" ; exit 1; }
 
 for hook in pre-receive pre-commit ; do
-    ln -s "${GIT_SCRIPTS}/sync-client-hooks/always-reject" "${client}/.git/hooks/${hook}"
+    ${GIT_HOOK_CMD} "${GIT_SCRIPTS}/sync-client-hooks/always-reject" "${client}/.git/hooks/${hook}"
 done
