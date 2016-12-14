@@ -25,21 +25,21 @@
 #
 # Usage: git-sync-with-svn.sh project_name
 
-destination=${GIT_SVN_SYNC_EMAIL}
-project=${1?No project provided}
-location=${GIT_SVN_SYNC_BASE}/${project}
+destination="${GIT_SVN_SYNC_EMAIL}"
+project="${1?No project provided}"
+location="${GIT_SVN_SYNC_BASE}/${project}"
 
-if [ ! -d $location ] ; then
+if [ ! -d "$location" ] ; then
     echo "The folder where the synchronization repository is supposed to be does not exist"
     exit 1
 fi
 
 unset GIT_DIR
-cd $location
+cd "$location"
 
 report () {
     echo $1
-    sh ${GIT_SCRIPTS}/report-error.sh $destination "$project" "$1"
+    sh "${GIT_SCRIPTS}/report-error.sh" "$destination" "$project" "$1"
 }
 
 # Get changes from git repository
