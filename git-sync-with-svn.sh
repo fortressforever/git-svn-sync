@@ -19,9 +19,11 @@
 #  - GIT_SCRIPTS: directory where the git sync scripts are located
 #  - GIT_SVN_SYNC_BASE: directory where the sync repositories are
 # stored.
-#  - GIT_SVN_SYNC_BRANCH: name of the branch that is synchronized with
-# subversion.
 #  - GIT_SVN_SYNC_EMAIL: email to send error reports to
+#
+# Optional environment variables:
+# - GIT_SVN_SYNC_BRANCH: name of the branch that is synchronized with
+# subversion (default = svn).
 #
 # Usage: git-sync-with-svn.sh project_name
 
