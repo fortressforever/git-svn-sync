@@ -27,7 +27,7 @@ fi
 # Set optional variables
 : ${GIT_SVN_SYNC_BRANCH:="svn-sync"}
 : ${GIT_SVN_LAYOUT:="--stdlayout"}
-[ -z "${GIT_SVN_AUTHORS}" ] || GIT_SVN_AUTHORS="--authors-file=${GIT_SVN_AUTHORS}"}
+[ -z "${GIT_SVN_AUTHORS}" ] || GIT_SVN_AUTHORS="--authors-file=${GIT_SVN_AUTHORS}"
 : ${GIT_HOOK_CMD:="ln -s"}
 
 project="${1?No project name provided}"
