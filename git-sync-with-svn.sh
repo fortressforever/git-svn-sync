@@ -19,13 +19,18 @@
 #  - GIT_SCRIPTS: directory where the git sync scripts are located
 #  - GIT_SVN_SYNC_BASE: directory where the sync repositories are
 # stored.
-#  - GIT_SVN_SYNC_EMAIL: email to send error reports to
 #
 # Optional environment variables:
-# - GIT_SVN_SYNC_BRANCH: name of the branch that is synchronized with
+#  - GIT_SVN_SYNC_EMAIL: email to send error reports to
+#  - GIT_SVN_SYNC_BRANCH: name of the branch that is synchronized with
 # subversion (default = svn-sync).
 #
 # Usage: git-sync-with-svn.sh project_name
+
+if [ -z "${GIT_SCRIPTS}" ] || [ -z "${GIT_SVN_SYNC_BASE}" ] ] ; then
+    echo "The following variables are required for the synchronization to work: GIT_SCRIPTS GIT_SVN_SYNC_BASE"
+    exit 1
+fi
 
 # Set optional variables
 : ${GIT_SVN_SYNC_BRANCH:="svn-sync"}
@@ -44,7 +49,7 @@ cd "$location"
 
 report () {
     echo $1
-    sh "${GIT_SCRIPTS}/report-error.sh" "$destination" "$project" "$1"
+    [ -z "${destination}" ] || sh "${GIT_SCRIPTS}/report-error.sh" "$destination" "$project" "$1"
 }
 
 # Get changes from git repository
