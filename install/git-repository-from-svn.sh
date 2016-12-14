@@ -19,7 +19,7 @@
 #
 # Usage: git-repository-from-svn.sh project svn_url git_url
 
-if [ -z "${GIT_SCRIPTS}" ] || [ -z "${GIT_SVN_SYNC_BASE}" ] ] ; then
+if [ -z "${GIT_SCRIPTS}" ] || [ -z "${GIT_SVN_SYNC_BASE}" ] ; then
     echo "The following variables are required for the synchronization to work: GIT_SCRIPTS GIT_SVN_SYNC_BASE"
     exit 1
 fi
