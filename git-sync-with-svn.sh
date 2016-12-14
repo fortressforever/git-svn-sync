@@ -23,9 +23,12 @@
 #
 # Optional environment variables:
 # - GIT_SVN_SYNC_BRANCH: name of the branch that is synchronized with
-# subversion (default = svn).
+# subversion (default = svn-sync).
 #
 # Usage: git-sync-with-svn.sh project_name
+
+# Set optional variables
+: ${GIT_SVN_SYNC_BRANCH:="svn-sync"}
 
 destination="${GIT_SVN_SYNC_EMAIL}"
 project="${1?No project provided}"
