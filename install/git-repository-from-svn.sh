@@ -20,6 +20,10 @@ if [ -z "${GIT_SCRIPTS}" ] || [ -z "${GIT_SVN_SYNC_BASE}" ] || [ -z "${GIT_SVN_S
     exit 1
 fi
 
+: ${GIT_SVN_SYNC_BRANCH:="svn"}
+: ${GIT_SVN_LAYOUT:="--stdlayout"}
+: ${GIT_SVN_AUTHORS:="--authors-file=${GIT_SVN_SYNC_BASE}/authors.txt"}
+
 project=${1?No project name provided}
 svn_url=${2?No svn url provided}
 git_url=${3?No git url provided}
@@ -31,7 +35,7 @@ if [ -d $client ] ; then
 fi
 
 # Sync client
-git svn clone ${svn_url} ${client} || { echo "Could not clone svn repository at ${svn_url} in ${client}" ; exit 1; }
+git svn clone ${GIT_SVN_LAYOUT} ${GIT_SVN_AUTHORS} ${svn_url} ${client} || { echo "Could not clone svn repository at ${svn_url} in ${client}" ; exit 1; }
 
 cd ${client}
 git remote add origin ${git_url} || { echo "Could not set up server as remote from sync" ; exit 1; }
