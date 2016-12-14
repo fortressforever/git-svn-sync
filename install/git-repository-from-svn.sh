@@ -13,7 +13,7 @@
 #
 # Optional environment variables:
 # - GIT_SVN_SYNC_BRANCH: name of the branch that is synchronized with
-# subversion (default = svn).
+# subversion (default = svn-sync).
 # - GIT_SVN_LAYOUT: SVN layout options to override (default --stdlayout)
 # - GIT_SVN_AUTHORS: authors-file option (default none)
 #
@@ -25,7 +25,7 @@ if [ -z "${GIT_SCRIPTS}" ] || [ -z "${GIT_SVN_SYNC_BASE}" ] || [ -z "${GIT_SVN_S
 fi
 
 # Set optional variables
-: ${GIT_SVN_SYNC_BRANCH:="svn"}
+: ${GIT_SVN_SYNC_BRANCH:="svn-sync"}
 : ${GIT_SVN_LAYOUT:="--stdlayout"}
 [ -z "${GIT_SVN_AUTHORS}" ] || GIT_SVN_AUTHORS="--authors-file=${GIT_SVN_AUTHORS}"}
 : ${GIT_HOOK_CMD:="ln -s"}
