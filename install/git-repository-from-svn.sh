@@ -44,6 +44,21 @@ fi
 git svn clone "${GIT_SVN_LAYOUT}" "${GIT_SVN_AUTHORS}" "${svn_url}" "${client}" || { echo "Could not clone svn repository at ${svn_url} in ${client}" ; exit 1; }
 
 cd "${client}"
+
+# Convert SVN tags for Git
+git for-each-ref --format="%(refname:short) %(objectname)" refs/remotes/tags \
+| while read BRANCH REF
+do
+    TAG_NAME=${BRANCH#*/}
+    BODY="$(git log -1 --format=format:%B $REF)"
+
+    echo "ref=$REF parent=$(git rev-parse $REF^) tagname=$TAG_NAME body=$BODY" >&2
+
+    git tag -a -m "$BODY" $TAG_NAME $REF^  \
+        && git branch -r -d $BRANCH \
+        || { echo "Could not convert tag $TAG_NAME" ; exit 1; }
+    done
+
 git remote add origin ${git_url} || { echo "Could not set up server as remote from sync" ; exit 1; }
 git branch ${GIT_SVN_SYNC_BRANCH} || { echo "Could not create svn sync branch" ; exit 1; }
 
