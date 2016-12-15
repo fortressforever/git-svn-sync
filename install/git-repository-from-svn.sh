@@ -41,7 +41,8 @@ if [ -d "$client" ] ; then
 fi
 
 # Sync client
-git svn clone "${GIT_SVN_LAYOUT}" "${GIT_SVN_AUTHORS}" "${svn_url}" "${client}" || { echo "Could not clone svn repository at ${svn_url} in ${client}" ; exit 1; }
+git svn clone "${GIT_SVN_LAYOUT}" "${GIT_SVN_AUTHORS}" "${svn_url}" "${client}" \
+    || { echo "Could not clone svn repository at ${svn_url} in ${client}" ; exit 1; }
 
 cd "${client}"
 
@@ -54,9 +55,13 @@ do
 
     echo "ref=$REF parent=$(git rev-parse $REF^) tagname=$TAG_NAME body=$BODY" >&2
 
-    git tag -a -m "$BODY" $TAG_NAME $REF^  \
-        && git branch -r -d $BRANCH \
+    # Only convert tag without revision suffix
+    [[ $TAG_NAME =~ ^.+@[0-9]+$ ]] \
+        || git tag -a -m "$BODY" $TAG_NAME $REF^ \
         || { echo "Could not convert tag $TAG_NAME" ; exit 1; }
+    # Delete branch/tag
+    git branch -r -d $BRANCH \
+        || { echo "Could not delete branch $TAG_NAME" ; exit 1; }
     done
 
 git remote add origin ${git_url} || { echo "Could not set up server as remote from sync" ; exit 1; }
