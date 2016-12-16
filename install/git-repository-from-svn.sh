@@ -29,7 +29,7 @@ fi
 : ${GIT_SVN_LAYOUT:="--stdlayout"}
 [ -z "${GIT_SVN_AUTHORS}" ] || GIT_SVN_AUTHORS="--authors-file=${GIT_SVN_AUTHORS}"
 : ${GIT_HOOK_CMD:="ln -s"}
-: ${GIT_SVN_REMOTE:="--prefix "svn"}
+: ${GIT_SVN_REMOTE:="--prefix svn"}
 
 project="${1?No project name provided}"
 svn_url="${2?No svn url provided}"
@@ -71,7 +71,7 @@ do
         *)
             # Copy to local Git branch
             git branch $NAME $BRANCH \
-            || { echo "Could not convert branche $NAME" ; exit 1; }
+            || { echo "Could not convert branch $NAME" ; exit 1; }
             ;;
         esac
     fi
