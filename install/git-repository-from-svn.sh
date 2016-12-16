@@ -58,7 +58,7 @@ do
 
     # Ignore branches with revision suffix
     # TODO: Implement an ignore regexp option
-    if [[ $NAME =~ ^.+@[0-9]+$ ]]; then
+    if ! [[ $NAME =~ ^.+@[0-9]+$ ]]; then
         case $BRANCH in
         tags/*)
             echo "Converting tag $NAME as local Git tag..."
