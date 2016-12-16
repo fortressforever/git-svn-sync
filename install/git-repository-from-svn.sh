@@ -29,6 +29,7 @@ fi
 : ${GIT_SVN_LAYOUT:="--stdlayout"}
 [ -z "${GIT_SVN_AUTHORS}" ] || GIT_SVN_AUTHORS="--authors-file=${GIT_SVN_AUTHORS}"
 : ${GIT_HOOK_CMD:="ln -s"}
+: ${GIT_SVN_REMOTE:="--prefix "svn"}
 
 project="${1?No project name provided}"
 svn_url="${2?No svn url provided}"
@@ -41,27 +42,42 @@ if [ -d "$client" ] ; then
 fi
 
 # Sync client
-git svn clone "${GIT_SVN_LAYOUT}" "${GIT_SVN_AUTHORS}" "${svn_url}" "${client}" \
+git svn clone ${GIT_SVN_LAYOUT} ${GIT_SVN_AUTHORS} ${GIT_SVN_REMOTE} "${svn_url}" "${client}" \
     || { echo "Could not clone svn repository at ${svn_url} in ${client}" ; exit 1; }
 
 cd "${client}"
 
-# Convert SVN tags for Git
-git for-each-ref --format="%(refname:short) %(objectname)" refs/remotes/tags \
+# Convert SVN tags and branches for remote Git
+git for-each-ref --format="%(refname:short) %(objectname)" refs/remotes/${GIT_SVN_REMOTE} \
 | while read BRANCH REF
 do
-    TAG_NAME=${BRANCH#*/}
+    NAME=${BRANCH#*/}
     BODY="$(git log -1 --format=format:%B $REF)"
 
-    echo "ref=$REF parent=$(git rev-parse $REF^) tagname=$TAG_NAME body=$BODY" >&2
+    echo "ref=$REF parent=$(git rev-parse $REF^) tagname=$NAME body=$BODY" >&2
 
-    # Only convert tag without revision suffix
-    [[ $TAG_NAME =~ ^.+@[0-9]+$ ]] \
-        || git tag -a -m "$BODY" $TAG_NAME $REF^ \
-        || { echo "Could not convert tag $TAG_NAME" ; exit 1; }
+    # Ignore branches with revision suffix
+    # TODO: Implement an ignore regexp option
+    if [[ $NAME =~ ^.+@[0-9]+$ ]]; then
+        case $BRANCH in
+        tags/*)
+            # Convert to local Git tags
+            git tag -a -m "$BODY" $NAME $REF^ \
+            || { echo "Could not convert tag $NAME" ; exit 1; }
+            ;;
+        trunk)
+            # Preserve the trunk
+            ;;
+        *)
+            # Copy to local Git branch
+            git branch $NAME $BRANCH \
+            || { echo "Could not convert branche $NAME" ; exit 1; }
+            ;;
+        esac
+    fi
     # Delete branch/tag
     git branch -r -d $BRANCH \
-        || { echo "Could not delete branch $TAG_NAME" ; exit 1; }
+        || { echo "Could not delete branch $NAME" ; exit 1; }
     done
 
 git remote add origin ${git_url} || { echo "Could not set up server as remote from sync" ; exit 1; }
