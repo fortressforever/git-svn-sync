@@ -51,7 +51,7 @@ cd "${client}"
 git for-each-ref --format="%(refname:short) %(objectname)" refs/remotes/${GIT_SVN_REMOTE} \
 | while read BRANCH REF
 do
-    NAME=${BRANCH#*/}
+    NAME=${BRANCH##*/}
     BODY="$(git log -1 --format=format:%B $REF)"
 
     echo "ref=$REF parent=$(git rev-parse $REF^) name=$NAME body=$BODY" >&2
@@ -59,7 +59,7 @@ do
     # Ignore branches with revision suffix
     # TODO: Implement an ignore regexp option
     if ! [[ $NAME =~ ^.+@[0-9]+$ ]]; then
-        case $BRANCH in
+        case ${BRANCH#*/} in
         tags/*)
             echo "Converting tag $NAME as local Git tag..."
             git tag -a -m "$BODY" $NAME $REF^ \
