@@ -1,4 +1,4 @@
-# -*- mode: Shell-script-*-
+ # -*- mode: Shell-script-*-
 #!/usr/bin/bash
 #
 # Author: Mario Fernandez
@@ -61,22 +61,22 @@ do
     if [[ $NAME =~ ^.+@[0-9]+$ ]]; then
         case $BRANCH in
         tags/*)
-            # Convert to local Git tags
+            echo "Converting tag $NAME as local Git tag..."
             git tag -a -m "$BODY" $NAME $REF^ \
             || { echo "Could not convert tag $NAME" ; exit 1; }
             ;;
         trunk)
-            # Preserve the trunk
+            echo "Preserving the trunk"
             ;;
         *)
-            # Copy to local Git branch
+            echo "Copying branch $NAME as local Git branch..."
             git branch $NAME $BRANCH \
             || { echo "Could not convert branch $NAME" ; exit 1; }
             ;;
         esac
     fi
     # Delete all svn branches, but trunk
-    if [[ $NAME =~ ^.+@[0-9]+$ ]]; then
+    if [[ $NAME =~ ^trunk$ ]]; then
         git branch -r -d $BRANCH \
         || { echo "Could not delete branch $NAME" ; exit 1; }
     done
