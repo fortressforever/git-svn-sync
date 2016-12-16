@@ -77,7 +77,7 @@ do
         esac
     fi
     # Delete all svn branches, but trunk
-    if [[ $NAME =~ ^trunk$ ]]; then
+    if ! [[ $NAME =~ ^trunk$ ]]; then
         git branch -r -d $BRANCH \
         || { echo "Could not delete branch $NAME" ; exit 1; }
     fi
