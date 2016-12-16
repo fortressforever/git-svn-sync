@@ -30,6 +30,7 @@ fi
 [ -z "${GIT_SVN_AUTHORS}" ] || GIT_SVN_AUTHORS="--authors-file=${GIT_SVN_AUTHORS}"
 : ${GIT_HOOK_CMD:="ln -s"}
 : ${GIT_SVN_REMOTE:="svn"}
+: ${GIT_PUSH:=1}
 
 project="${1?No project name provided}"
 svn_url="${2?No svn url provided}"
@@ -82,7 +83,13 @@ do
     fi
 done
 
+# Add the remote Git repo and push if requested
 git remote add origin ${git_url} || { echo "Could not set up server as remote from sync" ; exit 1; }
+if [ ${GIT_PUSH} -eq 1 ]; then
+    git push --all
+    git push --tags
+fi
+
 git branch ${GIT_SVN_SYNC_BRANCH} || { echo "Could not create svn sync branch" ; exit 1; }
 
 for hook in pre-receive pre-commit ; do
