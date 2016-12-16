@@ -79,7 +79,8 @@ do
     if [[ $NAME =~ ^trunk$ ]]; then
         git branch -r -d $BRANCH \
         || { echo "Could not delete branch $NAME" ; exit 1; }
-    done
+    fi
+done
 
 git remote add origin ${git_url} || { echo "Could not set up server as remote from sync" ; exit 1; }
 git branch ${GIT_SVN_SYNC_BRANCH} || { echo "Could not create svn sync branch" ; exit 1; }
