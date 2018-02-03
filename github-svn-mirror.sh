@@ -67,7 +67,7 @@ while [ $revision_to_merge -le $git_head_revision ]; do
 		svn merge --accept theirs-full --ignore-ancestry -c $revision_to_merge $git_location $svn_location || { report "Could not merge r$revision_to_merge ($commit_hash) from git repository to svn repository" ; exit 1; }
 		svn commit $svn_location -m "$commit_msg" || { report "Could not commit r$revision_to_merge ($commit_hash) to svn repository" ; exit 1; }
 		# update after commit to avoid svn: E195020: Cannot merge into mixed-revision working copy; try updating first
-		svn update $svn_location || report "Could not update svn after committing r$revision_to_merge ($commit_hash) to svn repository" ; exit 1; }
+		svn update $svn_location || { report "Could not update svn after committing r$revision_to_merge ($commit_hash) to svn repository" ; exit 1; }
 	fi
 
 	let revision_to_merge=$revision_to_merge+1
